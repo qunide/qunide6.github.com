@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+
+</head>
+<body>
+<canvas id="huatu" width="400px" height="600px"></canvas>
+
+<script type="application/javascript">
+
+    var huaban = document.getElementById("huatu").getContext("2d");
+
+
+
+    /*--------------------------------------------------画背景画背景-------------------------------------------*/
+    function drawBackground() {
+
+        var image1 = new Image();
+        image1.src = "./bg.png";  //注意此处要用相对路径
+        huaban.drawImage(image1, 0, 0, 400, 600);
+    }
+
+    /*--------------------------------------------------画鸟画鸟画鸟-------------------------------------------*/
+    q = 0;
+    birdy =  250;
+    function drawBird() {
+        var xiaoniao = new Image();
+        var threeniao = ["./0.gif", "./1.gif", "./2.gif"];
+        xiaoniao.src = threeniao[q % 3];
+        q++;
+        huaban.drawImage(xiaoniao,150, birdy, 40, 40); // 150x  250y  40wid 40hit
+    }
+    /*--------------------------------------------------画上管道-----------------------------------------------*/
+    shanmove = 400;
+    shanhit = 200;
+    shanmovey = 0;
+    function uppipemove() {
+        var sanpipe = new Image();
+        sanpipe.src = "./pipe.png";
+        shanmove = shanmove - 15;
+        if (shanmove < -100) {
+            shanmove = 400;
+        }
+        huaban.drawImage(sanpipe, 150, 500, 150, 800, shanmove, shanmovey, 100, shanhit);//shanmoveX  0y 100wid 200hit
+    }
+    /*--------------------------------------------------画下管道-----------------------------------------------*/
+    xiamove = 400;
+    xiahit = 200;
+    xiamovey = 400
+    function xiapapemove() {
+        var xiapipe = new Image();
+        xiapipe.src = "./pipe.png";
+        xiamove = xiamove - 15;
+        if (xiamove < -100) {
+            xiamove = 400;
+        }
+        huaban.drawImage(xiapipe, 0, 500, 150, 500, xiamove, xiamovey, 100, xiahit);//xiamoveX 400y 100wid 200hit
+    }
+    /*--------------------------------------------------画草地画草地-----------------------------------------------*/
+    function drawground() {
+        var ground = new Image();
+        ground.src = "./ground.png";
+        console.log("haa");
+        huaban.drawImage(ground, 0, 550, 400, 50);//0X 550y 400wid 50hit
+        console.log("haha");
+    }
+    /*--------------------------------------------------画游戏界面----------------------------------------------*/
+    function draw() {
+        huaban.clearRect(0, 0, 400, 600);
+        drawBackground();
+        xiapapemove();
+        uppipemove();
+        drawBird();
+        drawground();
+        birddown();
+        guandao();
+        gameover();
+        if( shanmove==400)
+        {
+            shanhit = 200*Math.random();
+
+        }
+
+    }
+    var timer = setInterval(draw, 100);
+
+    /*----------------------------------------------设置小鸟下降---------------------------------------------*/
+    var v1 = 5;
+    var v2 = 0;
+    var a = 0.4;
+    function birddown(){
+        v2 = v1 + a;
+        birdy += (v1+v2)/2;
+        v1 = v2;
+    }
+    /*-------------------------------------------------设置小鸟上升--------------------------------------------*/
+
+    window.onkeydown = function (event) {
+        var e = event || window.event;
+        if (e.keyCode == 32) {
+            v1 = 5;
+            v2 = 0;
+            birdy -= 30;
+
+        }
+    }
+    /* ----------------------------------------------设置碰撞以及分数-----------------------------------------------*/
+    gread = 0;
+
+    function gameover()
+    {
+        if(  (birdy+40 >=550 || birdy <0)
+              ||( (190>shanmove)  && (birdy <=shanhit ) && ( 150 <shanmove+100))
+              ||(150+40>xiamove) && (birdy+40> xiamovey) && (150<xiamove+100 )
+        )
+
+        {
+            huaban.font="30px Accent"
+            huaban.fillStyle="red"
+            huaban.fillText("game over"+"  "+gread+"  "+"分", 100, 250 );
+            clearInterval(timer);
+
+
+        }
+        else
+        {
+            if(150>shanmove+100)
+            {
+                gread+=1;  //柱子一秒画十次！每次向左15,400150-100=150 150/15 过一根加十分！
+            }
+        }
+
+
+    }
+
+    /* ----------------------------------------------管道高度变化------------------------------------------------*/
+
+    function guandao()
+    {
+        xiamovey = shanhit+200  ;
+        xiahit = 600 - xiamovey;
+    }
+</script>
+
+</body>
+</html>
